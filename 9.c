@@ -2,48 +2,51 @@
 #include <stdlib.h>
 void FIFO(char[], char[], int, int);
 void lru(char[], char[], int, int);
+void opt(char[], char[], int, int);
 int main()
 {
     int ch, YN = 1, i, l, f;
     char F[10], s[25];
-    printf("\n\n\t Enter the no of empty frames:");
+    printf("Enter the no of  frames: ");
     scanf("%d", &f);
-    printf("\n\n\t Enter the length of the string:");
+    printf("\nEnter the length of the string: ");
     scanf("%d", &l);
-    printf("\n\n\t Enter the string:");
+    printf("\nEnter the string: ");
     scanf("%s", s);
-    for (i = 0; i < f; i++)
-        F[i] = -1;
-    do
+    while (1)
     {
-        printf("\n\n\t ***** MENU *****");
-        printf("\n\n\t 1:FIFO\n\n\t2:LRU\n\n\t4:EXIT");
-        printf("\n\n\t Enter your choice:");
+        printf("\n------------------------------------------");
+        printf("\n1:FIFO\n2:LRU \n\3:EXIT");
+        printf("\nEnter your choice: ");
         scanf("%d", &ch);
         switch (ch)
         {
         case 1:
             for (i = 0; i < f; i++)
+            {
                 F[i] = -1;
+            }
             FIFO(s, F, l, f);
             break;
+
         case 2:
             for (i = 0; i < f; i++)
+            {
                 F[i] = -1;
+            }
             lru(s, F, l, f);
             break;
         case 3:
             exit(0);
         }
-        printf("\n\n\t Do u want to continue IF YES PRESS 1 \n\n\t IF NO PRESS 0\t");
-        scanf("%d", &YN);
-    } while (YN == 1);
-    return (0);
+    }
 }
+
+// FIFO
 void FIFO(char s[], char F[], int l, int f)
 {
     int i, j = 0, k, flag = 0, cnt = 0;
-    printf("\n\t PAGE\t FRAMES \t FAULTS");
+    printf("\nPAGE\t FRAMES\t FAULTS");
     for (i = 0; i < l; i++)
     {
         for (k = 0; k < f; k++)
@@ -53,34 +56,37 @@ void FIFO(char s[], char F[], int l, int f)
         }
         if (flag == 0)
         {
-            printf("\n\t%c\t", s[i]);
+            cnt++;
+            printf("\n%c\t", s[i]);
             F[j] = s[i];
-            j++;
+            j = (j + 1) % f;
             for (k = 0; k < f; k++)
             {
-                printf("%c", F[k]);
+                printf(" %c", F[k]);
             }
-            printf("\t Page fault %d", cnt);
-            cnt++;
+            printf("\tPage-fault%d", cnt);
         }
         else
         {
             flag = 0;
-            printf("\n\t%c\t", s[i]);
+            printf("\n%c\t", s[i]);
             for (k = 0; k < f; k++)
             {
-                printf("%c", F[k]);
+                printf(" %c", F[k]);
             }
-            printf("\t No page fault");
+            printf("\tNo page-fault");
         }
-        if (j == f)
-            j = 0;
+        // if(j==f)
+        // j=0;
     }
+    printf("\nTotal number of page faults=%d", cnt);
 }
+
+// LRU
 void lru(char s[], char F[], int l, int f)
 {
     int i, j = 0, k, m, flag = 0, cnt = 0, top = 0;
-    printf("\n\t PAGE \t FRAMES \t FAULTS");
+    printf("\nPAGE\t FRAMES\t FAULTS");
     for (i = 0; i < l; i++)
     {
         for (k = 0; k < f; k++)
@@ -91,7 +97,9 @@ void lru(char s[], char F[], int l, int f)
                 break;
             }
         }
-        printf("\n\t%c\t", s[i]);
+
+        printf("\n%c\t", s[i]);
+
         if (j != f && flag != 1)
         {
             F[top] = s[i];
@@ -99,6 +107,7 @@ void lru(char s[], char F[], int l, int f)
             if (j != f)
                 top++;
         }
+
         else
         {
             if (flag != 1)
@@ -115,25 +124,25 @@ void lru(char s[], char F[], int l, int f)
                 {
                     F[m] = F[m + 1];
                 }
-                if (j != f)
-                {
-                    F[top - 1] = s[i];
-                }
-                else
-                    F[top] = s[i];
+                F[top] = s[i];
             }
         }
+
         for (k = 0; k < f; k++)
         {
-            printf("%c", F[k]);
+            printf(" %c", F[k]);
         }
         if (flag == 0)
         {
-            printf("\t Page fault %d", cnt);
             cnt++;
+            printf("\tPage-fault%d", cnt);
         }
         else
-            printf("\t No page fault");
+            printf("\tNo page fault");
         flag = 0;
     }
+    printf("\n\nTotal number of page faults=%d", cnt);
 }
+
+//lru: 4 10 1234121234
+//fifo: 4 10 1234235121
